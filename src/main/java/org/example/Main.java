@@ -1,14 +1,14 @@
 package org.example;
 
-import org.example.store.StoreOffer;
-import org.example.util.OrderProcessing;
-import org.example.util.Realization;
+import org.example.process.OrderProcessing;
 
 public class Main {
     public static void main(String[] args) {
-        StoreOffer offer = new StoreOffer(10, 50);
-        OrderProcessing orders = new OrderProcessing();
-        Realization sale = new Realization(offer, orders);
+        String pathFileOrder = "./discount_day.txt";
+        String pathToSettlementReceipt = "./Financial_report.txt";
+        
+        OrderProcessing sale = new OrderProcessing(pathFileOrder, pathToSettlementReceipt);
         sale.getSale();
+        sale.writerOrder();
     }
 }
