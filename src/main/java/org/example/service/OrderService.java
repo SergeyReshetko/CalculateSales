@@ -1,35 +1,24 @@
 package org.example.service;
 
 import org.example.model.Order;
-import org.example.util.OrderAdapter;
+import org.example.model.PaymentOrder;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class OrderService {
     
-    public List<Order> calculateOrders(List<String> listOrders, int price, int discount, int reductionNumber) {
-        OrderAdapter orderAdapter = new OrderAdapter();
-        List<Order> orders = formOrders(orderAdapter.separateListOrders(listOrders));
+    public List<PaymentOrder> calculateOrders(List<Order> orders, int price, int discount, int reductionNumber) {
+        List<PaymentOrder> paymentOrders = new ArrayList<>();
         int finishDiscount = discount;
         for (Order order : orders) {
-            order.setAmount(calculatePrice(price, finishDiscount) * order.getOrderWeight());
+            PaymentOrder paymentOrder = new PaymentOrder(order.getName(), calculatePrice(price, finishDiscount) * order.getOrderWeight());
+            paymentOrders.add(paymentOrder);
             finishDiscount = discountReduction(finishDiscount, reductionNumber);
         }
-        return orders;
-    }
-    
-    private List<Order> formOrders(List<String[]> orders) {
-        List<Order> ordersCompanies = new ArrayList<>();
-        for (String[] temp : orders) {
-            Order order = new Order(temp[0], temp[1], Integer.parseInt(temp[2]));
-            ordersCompanies.add(order);
-        }
-        ordersCompanies.sort(Comparator.comparing(Order::getOrderDate));
-        return ordersCompanies;
+        return paymentOrders;
     }
     
     private double calculatePrice(int price, int discount) {

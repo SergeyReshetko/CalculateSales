@@ -6,7 +6,6 @@ public class Order {
     private final String name;
     private final int orderWeight;
     private final String orderDate;
-    private double amount;
     
     public Order(String date, String name, int orderWeight) {
         Objects.requireNonNull(date, "date must not be null");
@@ -26,13 +25,5 @@ public class Order {
     
     public String getOrderDate() {
         return orderDate;
-    }
-    
-    public double getAmount() {
-        return amount;
-    }
-    
-    public void setAmount(double amount) {
-        this.amount = amount;
     }
 }
