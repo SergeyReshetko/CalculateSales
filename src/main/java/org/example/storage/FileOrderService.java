@@ -5,7 +5,7 @@ import org.example.util.FileUtil;
 
 import java.util.List;
 
-public class WriterFile {
+public class FileOrderService {
     
     public void createTextListOrders(FileUtil fileUtil, String pathFileWriter, List<PaymentOrder> paymentOrders) throws Exception {
         for (PaymentOrder order : paymentOrders) {
