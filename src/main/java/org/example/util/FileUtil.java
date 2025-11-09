@@ -23,16 +23,15 @@ public class FileUtil {
         
     }
     
-    public void writerFile(String path, String report) throws Exception {
+    public void writerTextFile(String path, String report) throws Exception {
         File file = new File(path);
-        
-        FileWriter writer = new FileWriter(file.getName(), true);
-        BufferedWriter bufferedWriter = new BufferedWriter(writer);
-        
         if (report != null || file.createNewFile()) {
-            bufferedWriter.write(Objects.requireNonNull(report));
-            bufferedWriter.newLine();
-            bufferedWriter.close();
+            try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getName(), true))) {
+                bufferedWriter.write(Objects.requireNonNull(report));
+                bufferedWriter.newLine();
+            } catch (IOException e) {
+                e.fillInStackTrace();
+            }
         } else {
             throw new IORuntimeException("Ошибка при записи файла заказов");
         }
