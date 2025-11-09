@@ -1,37 +1,25 @@
 package org.example.process;
 
 import org.example.service.OrderService;
+import org.example.model.Order;
+import org.example.storage.StorageOrders;
 import org.example.util.FileUtil;
+
+import java.util.List;
 
 
 public class OrderProcessing {
-    private final String pathFileRead;
-    private final String pathFileWriter;
-    OrderService offer;
     
-    public OrderProcessing(String pathFileRead, String pathFileWriter) {
-        this.pathFileRead = pathFileRead;
-        this.pathFileWriter = pathFileWriter;
-    }
-    
-    public void getSale() {
-        FileUtil readerOrders = new FileUtil();
+    public void process(String pathFileRead, String pathFileWriter, int price, int discount, int reductionNumber) {
+        FileUtil fileUtil = new FileUtil();
         try {
-            offer = new OrderService(readerOrders.readFile(this.pathFileRead));
-            offer.calculateOrders();
+            OrderService offer = new OrderService();
+            List<Order> orders;
+            orders = offer.calculateOrders(fileUtil.readFile(pathFileRead), price, discount, reductionNumber);
+            StorageOrders storageOrders = new StorageOrders();
+            storageOrders.writerOrder(fileUtil, pathFileWriter, orders);
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-    }
-    
-    public void writerOrder() {
-        FileUtil writerReport = new FileUtil();
-        for (String report : offer.getOrderReport()) {
-            try {
-                writerReport.writerFile(pathFileWriter, report);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }

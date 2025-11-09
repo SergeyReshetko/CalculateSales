@@ -1,52 +1,52 @@
 package org.example.service;
 
-import org.example.orders.Order;
-import org.example.orders.OrderAdapter;
+import org.example.model.Order;
+import org.example.util.OrderAdapter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class OrderService {
-    private static final String MAX_PERCENT = "100";
-    private final List<String> orderReport = new ArrayList<>();
-    private int discount = 50;
-    OrderAdapter listOrder;
     
-    public List<String> getOrderReport() {
-        return orderReport;
-    }
-    
-    public OrderService(List<String> listOrders) {
-        this.listOrder = new OrderAdapter(listOrders);
-    }
-    
-    public void calculateOrders() {
-        for (Order order : listOrder.getOrdersCompanies()) {
-            orderReport.add(order.getName() + " - " + getFullPrice(order.getOrderWeight()));
-            discountReduction();
+    public List<Order> calculateOrders(List<String> listOrders, int price, int discount, int reductionNumber) {
+        OrderAdapter orderAdapter = new OrderAdapter();
+        List<Order> orders = formOrders(orderAdapter.separateListOrders(listOrders));
+        int finishDiscount = discount;
+        for (Order order : orders) {
+            order.setAmount(calculatePrice(price, finishDiscount) * order.getOrderWeight());
+            finishDiscount = discountReduction(finishDiscount, reductionNumber);
         }
-        orderReport.forEach(System.out::println);
+        return orders;
     }
     
-    private double getFullPrice(int orderWeight) {
-        return calculatePrice() * orderWeight;
+    private List<Order> formOrders(List<String[]> orders) {
+        List<Order> ordersCompanies = new ArrayList<>();
+        for (String[] temp : orders) {
+            Order order = new Order(temp[0], temp[1], Integer.parseInt(temp[2]));
+            ordersCompanies.add(order);
+        }
+        ordersCompanies.sort(Comparator.comparing(Order::getOrderDate));
+        return ordersCompanies;
     }
     
-    private double calculatePrice() {
-        int price = 10;
-        return price * percentage(this.discount);
+    private double calculatePrice(int price, int discount) {
+        return price * percentage(discount);
     }
     
-    private void discountReduction() {
-        int reductionNumber = 5;
-        this.discount -= reductionNumber;
+    private int discountReduction(int discount, int reductionNumber) {
+        if (discount != 0) {
+            discount -= reductionNumber;
+        }
+        return discount;
     }
     
     private double percentage(int percentage) {
+        String maxPercent = "100";
         BigDecimal converter = new BigDecimal(String.valueOf(percentage));
-        BigDecimal result = converter.divide(new BigDecimal(MAX_PERCENT), 2, RoundingMode.HALF_EVEN);
+        BigDecimal result = converter.divide(new BigDecimal(maxPercent), 2, RoundingMode.HALF_EVEN);
         return 1 - result.doubleValue();
     }
 }
