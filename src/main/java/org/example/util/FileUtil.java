@@ -11,23 +11,19 @@ public class FileUtil {
     public List<String> readFile(String path) throws Exception {
         List<String> listOrders = new ArrayList<>();
         FileReader reader = new FileReader(path);
+        BufferedReader bufferedReader = new BufferedReader(reader);
         String order;
-        if (!reader.ready()) {
-            try (BufferedReader bufferedReader = new BufferedReader(reader)) {
-                while ((order = bufferedReader.readLine()) != null) {
-                    listOrders.add(order);
-                }
-            } catch (IOException e) {
-                throw new IOTextFileException("Ошибка при чтение файла заказов");
-            }
-            return listOrders;
-        } else {
-            throw new IORuntimeException("Ошибка файл для чтения не готов");
-        }
         
+        if (!reader.ready()) {
+            throw new IORuntimeException("Ошибка при чтение файла заказов");
+        }
+        while ((order = bufferedReader.readLine()) != null) {
+            listOrders.add(order);
+        }
+        return listOrders;
     }
     
-    public void writerTextFile(String path, String paymentOrder) throws Exception {
+    public void writeFile(String path, String paymentOrder) throws Exception {
         File file = new File(path);
         if (paymentOrder != null || file.createNewFile()) {
             try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file.getName(), true))) {
