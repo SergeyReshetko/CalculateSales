@@ -1,19 +1,17 @@
 package org.example.adapter;
 
-import org.example.model.Order;
+import org.example.parser.FilesOperations;
+import org.example.parser.OrdersOperationsInterface;
 
-import java.util.*;
-
-public class OrderAdapter {
+public class OrderAdapter extends FilesOperations implements OrdersOperationsInterface {
     
-    public List<Order> formOrdersTextFile(List<String> textOrders) {
-        List<Order> orders = new ArrayList<>();
-        for (String temp : textOrders) {
-            String[] parseOrders = temp.split("\\|");
-            Order order = new Order(parseOrders[0], parseOrders[1], Integer.parseInt(parseOrders[2]));
-            orders.add(order);
+    @Override
+    public String[] orderParse(String order) {
+        if (order.contains("|")) {
+            return parseTextFile(order);
+        } else if (order.contains("#")) {
+            return parseStemNameFile(order);
         }
-        orders.sort(Comparator.comparing(Order::getOrderDate));
-        return orders;
+        return null;
     }
 }
