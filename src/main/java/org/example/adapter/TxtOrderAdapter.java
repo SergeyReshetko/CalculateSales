@@ -1,11 +1,10 @@
-package org.example.process;
+package org.example.adapter;
 
-import org.example.adapter.OrderAdapter;
 import org.example.model.Order;
 
 import java.util.*;
 
-public class GenerateOrders extends OrderAdapter {
+public class TxtOrderAdapter implements OrderAdapter {
     
     public List<Order> orderFormation(List<String> textOrders) {
         List<Order> orders = new ArrayList<>();
@@ -16,5 +15,15 @@ public class GenerateOrders extends OrderAdapter {
         }
         orders.sort(Comparator.comparing(Order::getOrderDate));
         return orders;
+    }
+    
+    @Override
+    public String[] orderParse(String order) {
+        if (order.contains("|")) {
+            return order.split("\\|");
+        } else if (order.contains("#")) {
+            return order.split("#");
+        }
+        return null;
     }
 }
