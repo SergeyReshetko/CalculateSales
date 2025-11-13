@@ -8,7 +8,7 @@ import java.util.*;
 
 public class FileUtil {
     
-    public List<String> readFile(String path) throws Exception {
+    public List<String> readFile(File path) throws Exception {
         List<String> listOrders = new ArrayList<>();
         FileReader reader = new FileReader(path);
         BufferedReader bufferedReader = new BufferedReader(reader);

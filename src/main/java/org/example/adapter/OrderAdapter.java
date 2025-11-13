@@ -1,5 +1,9 @@
 package org.example.adapter;
 
+import org.example.model.Order;
+
+import java.util.List;
+
 public interface OrderAdapter {
-    String[] orderParse(String order);
+    List<Order> orderParse(List<String> textOrders);
 }
