@@ -1,5 +1,3 @@
-
-
 package org.example.adapter;
 
 import org.example.model.Order;

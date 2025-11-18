@@ -26,34 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/*
-Основные тестовые сценарии:
-Позитивный сценарий:
-Проверяет успешное выполнение всего процесса
-
-Использует MockedStatic для Mocking статического метода OrderAdapterRegister.getOrderAdapter()
-
-Проверяет, что все зависимости вызываются с правильными параметрами
-
-Негативные сценарии:
-Ошибка адаптера - когда не удается получить адаптер для файла
-
-Ошибка чтения файла - проблемы с чтением исходного файла
-
-Ошибка parsing - некорректный формат данных в файле
-
-Ошибка расчета - проблемы при вычислении платежей
-
-Ошибка сохранения - сбой при записи результатов
-
-Граничный случай:
-Пустой список заказов - проверка обработки файла без данных
- */
-
-//@ExtendWith(MockitoExtension.class) - включает поддержку Mockito в JUnit 5
 @ExtendWith(MockitoExtension.class)
 class OrderProcessingTest {
-    // Mock зависимостей - создаются для всех зависимостей тестируемого класса
     @Mock
     private FileUtil fileUtil;
     
@@ -63,24 +37,18 @@ class OrderProcessingTest {
     @Mock
     private OrderService orderService;
     
-    // Тестируемый класс
     private OrderProcessing orderProcessing;
     
-    // Тестовые данные
     private File testFile;
     private String testOutputPath;
     private int testPrice;
     private int testDiscount;
     private int testReductionNumber;
     
-    // @BeforeEach - метод инициализации, который выполняется перед каждым тестом
     @BeforeEach
     void setUp() {
-        
-        // Создание экземпляра тестируемого класса
         orderProcessing = new OrderProcessing(fileUtil, fileOrderService, orderService);
         
-        // Инициализация тестовых данных
         testFile = new File("test_orders_1.txt");
         testOutputPath = "output_orders.txt";
         testPrice = 100;
@@ -88,14 +56,9 @@ class OrderProcessingTest {
         testReductionNumber = 5;
     }
     
-    // @DisplayName позволяет задавать пользовательское отображаемое имя
     @Test
     @DisplayName("Успешная обработка заказов - полный положительный сценарий")
     void process_SuccessfulProcessing_ShouldCompleteWithoutErrors() throws Exception {
-        /*
-        Используем try-with-resources для MockedStatic
-        Использует MockedStatic для Mocking статического метода OrderAdapterRegister.getOrderAdapter()
-         */
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
             // Arrange
             OrderAdapter orderAdapter = mock(OrderAdapter.class);
@@ -109,36 +72,22 @@ class OrderProcessingTest {
                     new PaymentOrder("order2", 3.3)
             );
             
-            
-            // Настройка - Проверяет, что все зависимости вызываются с правильными параметрами
-            /*
-            when() — статический метод Mockito, принимает вызов метода на Mock и возвращает экземпляр
-            thenReturn() - метод Mockito, который позволяет задать возвращаемое значение для вызова метода мок-объекта.
-             */
             when(fileUtil.readFile(testFile)).thenReturn(fileContent);
             adapterRegisterMock.when(() -> OrderAdapterRegister.getOrderAdapter(testFile))
                     .thenReturn(orderAdapter);
             when(orderAdapter.orderParse(fileContent)).thenReturn(parsedOrders);
             when(orderService.calculateOrders(parsedOrders, testPrice, testDiscount, testReductionNumber))
                     .thenReturn(calculatedOrders);
-            /*
-            Метод doNothing() в Mockito для Java позволяет указать,
-            что при вызове метода на мок-объекте ничего не должно происходить
-             */
+            
             doNothing().when(fileOrderService)
                     .savePaymentOrders(fileUtil, testOutputPath, calculatedOrders);
             
-            // assertDoesNotThrow() метод класса Assertions, который проверяет, что блок кода не вызывает исключение.
             assertDoesNotThrow(() -> orderProcessing.
                                              process(testFile, testOutputPath,
                                                      testPrice, testDiscount,
                                                      testReductionNumber)
             );
             
-            /*
-             Verify - - это метод Mockito, который позволяет проверить,
-             был ли вызван определенный метод мок-объекта с заданными параметрами и сколько раз
-             */
             verify(fileUtil).readFile(testFile);
             adapterRegisterMock.verify(() -> OrderAdapterRegister.getOrderAdapter(testFile));
             verify(orderAdapter).orderParse(fileContent);
@@ -151,10 +100,6 @@ class OrderProcessingTest {
     @DisplayName("Ошибка при получении адаптера - должно выбросить OrderProcessingException")
     void process_AdapterNotFound_ShouldThrowOrderProcessingException() throws Exception {
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
-            /*
-            thenThrow() - метод Mockito, который позволяет настроить
-             мок-объект на выбрасывание исключения при вызове определенного метода.
-             */
             adapterRegisterMock.when(() -> OrderAdapterRegister.getOrderAdapter(testFile))
                     .thenThrow(new RuntimeException("Adapter not found"));
             
@@ -168,10 +113,6 @@ class OrderProcessingTest {
             
             assertEquals("Процесс подсчета не завершен", exception.getMessage());
             
-            /*
-            never() - это метод Mockito, который позволяет проверить,
-            что определенный метод мок-объекта никогда не вызывался во время выполнения теста.
-             */
             adapterRegisterMock.verify(() -> OrderAdapterRegister.getOrderAdapter(testFile));
             verify(fileUtil, never()).readFile(any());
             verify(orderService, never()).calculateOrders(anyList(), anyInt(), anyInt(), anyInt());
