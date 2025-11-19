@@ -4,7 +4,6 @@ import org.example.exception.IORuntimeException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.io.TempDir;
-import org.junit.jupiter.api.BeforeEach;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -19,15 +18,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FileUtilTest {
     
-    private FileUtil fileUtil;
+    private final FileUtil fileUtil = new FileUtil();
     
     @TempDir
     Path tempDir;
-    
-    @BeforeEach
-    void setUp() {
-        fileUtil = new FileUtil();
-    }
     
     @Test
     @DisplayName("Успешное чтение файла с несколькими строками")
