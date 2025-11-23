@@ -2,7 +2,7 @@ package org.example.model;
 
 import java.util.Objects;
 
-public class Order {
+public class Order implements Comparable<Order> {
     private final String name;
     private final int orderWeight;
     private final String orderDate;
@@ -25,5 +25,10 @@ public class Order {
     
     public String getOrderDate() {
         return orderDate;
+    }
+    
+    @Override
+    public int compareTo(Order order) {
+        return orderDate.compareTo(order.getOrderDate());
     }
 }
