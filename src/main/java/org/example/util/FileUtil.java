@@ -36,7 +36,7 @@ public class FileUtil {
                 bufferedWriter.newLine();
             }
         } catch (IOException e) {
-            throw new IORuntimeException("");
+            throw new IORuntimeException("Ошибка при записи файла заказов");
         }
     }
 }

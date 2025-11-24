@@ -128,18 +128,18 @@ class FileUtilTest {
     }
     
     @Test
-    @DisplayName("Ошибка при записи в файл - бросает IOTextFileException")
-    void writeFile_IOExceptionDuringWriting_ThrowsIOTextFileException() {
+    @DisplayName("Ошибка при записи в файл - бросает IORuntimeException")
+    void writeFile_IOExceptionDuringWriting_IORuntimeException() {
         String invalidPath = tempDir.resolve("nonexistent_dir").resolve("file.txt").toString();
         String paymentOrder = "Test order";
         
-        assertThrows(IOException.class,
+        assertThrows(RuntimeException.class,
                 () -> fileUtil.writeFile(invalidPath, paymentOrder));
     }
     
     @Test
     @DisplayName("Создание нового файла при записи")
-    void writeFile_CreatesNewFile_WhenFileDoesNotExist() throws Exception {
+    void writeFile_CreatesNewFile_WhenFileDoesNotExist() {
         String newFilePath = tempDir.resolve("new file.txt").toString();
         File newFile = new File(newFilePath);
         String paymentOrder = "Test order";
