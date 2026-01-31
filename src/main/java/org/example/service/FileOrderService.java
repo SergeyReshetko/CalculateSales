@@ -7,10 +7,10 @@ import java.util.List;
 
 public class FileOrderService {
     
-    public void savePaymentOrders(FileUtil fileUtil, String pathFileWriter, List<PaymentOrder> paymentOrders) throws Exception {
-        for (PaymentOrder order : paymentOrders) {
-            fileUtil.writeFile(pathFileWriter, order.getName() + " | " + order.getFinalPrice());
-        }
+    public void savePaymentOrders(FileUtil fileUtil, String pathFileWriter, List<PaymentOrder> paymentOrders) {
+        paymentOrders.stream()
+                .map(paymentOrder -> paymentOrder.getFinalPrice() + " | " + paymentOrder.getFinalPrice())
+                .forEach(s -> fileUtil.writeFile(pathFileWriter, s));
     }
 }
 

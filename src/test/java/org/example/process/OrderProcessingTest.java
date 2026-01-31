@@ -58,7 +58,7 @@ class OrderProcessingTest {
     
     @Test
     @DisplayName("Успешная обработка заказов - полный положительный сценарий")
-    void process_SuccessfulProcessing_ShouldCompleteWithoutErrors() throws Exception {
+    void process_SuccessfulProcessing_ShouldCompleteWithoutErrors() {
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
             // Arrange
             OrderAdapter orderAdapter = mock(OrderAdapter.class);
@@ -98,7 +98,7 @@ class OrderProcessingTest {
     
     @Test
     @DisplayName("Ошибка при получении адаптера - должно выбросить OrderProcessingException")
-    void process_AdapterNotFound_ShouldThrowOrderProcessingException() throws Exception {
+    void process_AdapterNotFound_ShouldThrowOrderProcessingException() {
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
             adapterRegisterMock.when(() -> OrderAdapterRegister.getOrderAdapter(testFile))
                     .thenThrow(new RuntimeException("Adapter not found"));
@@ -122,7 +122,7 @@ class OrderProcessingTest {
     
     @Test
     @DisplayName("Ошибка при чтении файла - должно выбросить OrderProcessingException")
-    void process_FileReadError_ShouldThrowOrderProcessingException() throws Exception {
+    void process_FileReadError_ShouldThrowOrderProcessingException() {
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
             OrderAdapter orderAdapter = mock(OrderAdapter.class);
             
@@ -147,7 +147,7 @@ class OrderProcessingTest {
     
     @Test
     @DisplayName("Ошибка при parsing заказов - должно выбросить OrderProcessingException")
-    void testOrderParsingError() throws Exception {
+    void testOrderParsingError() {
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
             OrderAdapter orderAdapter = mock(OrderAdapter.class);
             List<String> fileContent = new ArrayList<>(Collections.singletonList("invalid,data"));
@@ -173,7 +173,7 @@ class OrderProcessingTest {
     
     @Test
     @DisplayName("Ошибка при расчете заказов - должно выбросить OrderProcessingException")
-    void testOrderCalculationError() throws Exception {
+    void testOrderCalculationError() {
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
             OrderAdapter orderAdapter = mock(OrderAdapter.class);
             List<String> fileContent = Collections.singletonList("order1,2");
@@ -203,7 +203,7 @@ class OrderProcessingTest {
     
     @Test
     @DisplayName("Ошибка при сохранении результатов - должно выбросить OrderProcessingException")
-    void testSaveResultsError() throws Exception {
+    void testSaveResultsError() {
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
             OrderAdapter orderAdapter = mock(OrderAdapter.class);
             List<String> fileContent = Collections.singletonList("order1,2");
@@ -237,7 +237,7 @@ class OrderProcessingTest {
     
     @Test
     @DisplayName("Обработка пустого списка заказов - должен завершиться успешно")
-    void process_EmptyOrderList_ShouldCompleteSuccessfully() throws Exception {
+    void process_EmptyOrderList_ShouldCompleteSuccessfully() {
         try (MockedStatic<OrderAdapterRegister> adapterRegisterMock = mockStatic(OrderAdapterRegister.class)) {
             OrderAdapter orderAdapter = mock(OrderAdapter.class);
             List<String> fileContent = Collections.emptyList();
